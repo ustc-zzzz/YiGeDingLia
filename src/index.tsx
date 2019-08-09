@@ -122,8 +122,7 @@ function App() {
       <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>https://github.com/pwxcoo/chinese-xinhua</a></p>
     </div>
   } else {
-    const base = 'https://raw.githubusercontent.com'
-    const url = `${base}/pwxcoo/chinese-xinhua/master/data/idiom.json`
+    const url = 'https://cdn.jsdelivr.net/gh/pwxcoo/chinese-xinhua/data/idiom.json'
     fetch(url).then(res => res.json()).then(json => setState(indexed(json))).catch(error => setState({...state, error}))
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
