@@ -34,9 +34,21 @@ const getLastPinyin = (pinyin: string) => {
   return pinyin.normalize('NFKD').replace(/[^\w\s]|.+\s/g, '')
 }
 
+const fix = (data: Data) => {
+  if ('味同嚼蜡' === data.word) {
+    data.pinyin = data.pinyin.replace('cù', 'là')
+  }
+  if (data.word.endsWith('俩')) {
+    data.pinyin = data.pinyin.replace('liǎng', 'liǎ')
+  }
+  data.pinyin = data.pinyin.replace(/yi([ēéěèêe])/g, 'y$1')
+  return data;
+}
+
 const indexed = (json: Data[]) => {
   const result: State = { firstPinyin: {}, lastPinyin: {}, word: {} }
   for (const data of json) {
+    fix(data)
     if (data.word.length === 4) {
       const key1 = getLastPinyin(data.pinyin)
       const values1 = result.lastPinyin[key1] || []
