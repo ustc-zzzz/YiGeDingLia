@@ -23,6 +23,7 @@ interface State {
   word: {
     [key: string]: Data
   }
+  error?: string
 }
 
 const getFirstPinyin = (pinyin: string) => {
@@ -101,10 +102,17 @@ function App() {
       <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>https://github.com/ustc-zzzz/yigedinglia</a></p>
       <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>https://github.com/pwxcoo/chinese-xinhua</a></p>
     </div>
+  } else if (state.error) {
+    return <div className='markdown-body'>
+      <h1>一个顶俩</h1>
+      <p style={{color: 'red'}}>{`数据加载中...加载异常，请刷新重试：${state.error}`}</p>
+      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>https://github.com/ustc-zzzz/yigedinglia</a></p>
+      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>https://github.com/pwxcoo/chinese-xinhua</a></p>
+    </div>
   } else {
     const base = 'https://raw.githubusercontent.com'
     const url = `${base}/pwxcoo/chinese-xinhua/master/data/idiom.json`
-    fetch(url).then(response => response.json()).then(json => setState(indexed(json)))
+    fetch(url).then(res => res.json()).then(json => setState(indexed(json))).catch(error => setState({...state, error}))
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
       <p>数据加载中...</p>
