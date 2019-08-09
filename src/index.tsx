@@ -72,13 +72,13 @@ const handle = (input: string, state: State) => {
   let data = state.word[input]
   while (data && data.level) {
     const level = data.level
-    result.push(data.word)
+    result.push(`${data.word}（${data.pinyin}）`)
     if (level > 1) {
       const next = state.firstPinyin[getLastPinyin(data.pinyin)]
       const filtered = next.filter(d => d.level && d.level < level)
       data = filtered[Math.floor(Math.random() * filtered.length)]
     } else {
-      result.push('一个顶俩')
+      result.push('一个顶俩（yī gè dǐng liǎ）')
       return result
     }
   }
