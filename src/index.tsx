@@ -128,8 +128,8 @@ function App() {
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
       <p>数据加载中...</p>
-      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>https://github.com/ustc-zzzz/yigedinglia</a></p>
-      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>https://github.com/pwxcoo/chinese-xinhua</a></p>
+      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
+      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
     </div>
   }
 }
