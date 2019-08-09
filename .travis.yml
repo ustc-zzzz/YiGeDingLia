@@ -1,0 +1,13 @@
+language: node_js
+node_js: ["8"]
+before_install:
+- git config --global user.email "deploy@travis-ci.org"
+- git config --global user.name "Travis CI Deployment Bot"
+script:
+- npm install
+- npm run build
+after_success:
+- cd build/
+- echo "lia.ustc-zzzz.net" >CNAME
+- git init; git add -- *; git commit --allow-empty-message -m ""
+- git push -f -q https://ustc-zzzz:$GITHUB_TOKEN@github.com/ustc-zzzz/yigedinglia master:gh-pages
