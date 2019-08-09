@@ -1,0 +1,14 @@
+@media (min-width: 768px) {
+  body {
+    margin: auto;
+    width: 768px;
+    padding: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    margin: 0;
+    padding: 32px;
+  }
+}
