@@ -111,15 +111,15 @@ function App() {
       <ul>{seq.map(data => {
         return <li key={data}>{data}</li>
       })}</ul>
-      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>https://github.com/ustc-zzzz/yigedinglia</a></p>
-      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>https://github.com/pwxcoo/chinese-xinhua</a></p>
+      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
+      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
     </div>
   } else if (state.error) {
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
       <p style={{color: 'red'}}>{`数据加载中...加载异常，请刷新重试：${state.error}`}</p>
-      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>https://github.com/ustc-zzzz/yigedinglia</a></p>
-      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>https://github.com/pwxcoo/chinese-xinhua</a></p>
+      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
+      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
     </div>
   } else {
     const url = 'https://cdn.jsdelivr.net/gh/pwxcoo/chinese-xinhua/data/idiom.json'
