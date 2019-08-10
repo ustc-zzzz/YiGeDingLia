@@ -125,9 +125,10 @@ function App() {
       <h1>一个顶俩</h1>
       <p>请输入一个四字成语，如成功识别：</p>
       <p>本页面将自动为你接龙到“一个顶俩”</p>
+      <p>点击成语可以直接复制</p>
       <p><input type='input' onChange={e => setSeq(handle(e.target.value, state))} /></p>
       <ul>{seq.map(data => {
-        return <li onClick={copyText(data.word)} key={data.word}>{data.word}（{data.pinyin}）</li>
+        return <li className='clickable' onClick={copyText(data.word)} key={data.word}>{data.word}（{data.pinyin}）</li>
       })}</ul>
       <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
       <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>

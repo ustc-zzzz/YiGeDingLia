@@ -12,3 +12,7 @@
     padding: 32px;
   }
 }
+
+.clickable {
+  cursor: pointer;
+}
