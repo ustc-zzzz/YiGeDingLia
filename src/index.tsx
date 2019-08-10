@@ -5,6 +5,8 @@ import Clipboard from 'clipboard-polyfill'
 import './index.css'
 import './github-markdown.css'
 
+type ErrorMsg = string
+
 type Idiom = {
   word: string,
   pinyin: string,
@@ -28,7 +30,6 @@ interface State {
   word: {
     [key: string]: Data
   }
-  error?: string
 }
 
 const getFirstPinyin = (data: Data) => {
@@ -108,6 +109,11 @@ const handle = (input: string, state: State) => {
   return result
 }
 
+function fetchJson(resolve: (data: State) => void, reject: (error: ErrorMsg) => void) {
+  const url = 'https://cdn.jsdelivr.net/gh/pwxcoo/chinese-xinhua/data/idiom.json'
+  fetch(url).then(r => r.json()).then(j => resolve(indexed(j))).catch(e => reject('' + e))
+}
+
 function copyText(text: string) {
   return () => {
     const dt = new Clipboard.DT()
@@ -116,38 +122,74 @@ function copyText(text: string) {
   }
 }
 
+function Loading(props: { error: ErrorMsg }) {
+  if (props.error === '') {
+    return <p>数据加载中...</p>
+  } else {
+    return <p style={{ color: 'red' }}>{`数据加载中...加载异常，请刷新重试：${props.error}`}</p>
+  }
+}
+
+function Input(props: { onChange(value: string): void }) {
+  return <div>
+    <p>请输入一个四字成语，<wbr />如成功识别：</p>
+    <p>本页面将自动为你<wbr />接龙到“一个顶俩”</p>
+    <p><input type='input' onChange={e => props.onChange(e.target.value)} /></p>
+  </div>
+}
+
+function Output(props: { copyText(word: string): () => void, seq: Idiom[] }) {
+  if (props.seq.length > 0) {
+    return <div>
+      <p>点击成语可以直接复制：</p>
+      <ul>{props.seq.map(data => {
+        return <li className='clickable' onClick={copyText(data.word)} key={data.word}>
+          {data.word}（{data.pinyin}）
+        </li>
+      })}</ul>
+    </div>
+  } else {
+    return <div>
+      <p>没有输出？<wbr />情况可能是以下两种之一：</p>
+      <ul>
+        <li>不是四字成语，<wbr />或成语在词库中不存在</li>
+        <li>成语存在，<wbr />但是无法接龙到“一个顶俩”</li>
+      </ul>
+    </div>
+  }
+}
+
+function Footer() {
+  return <div>
+    <p>
+      网页来源：<wbr />
+      <a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a>
+    </p>
+    <p>
+      数据来源：<wbr />
+      <a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a>
+    </p>
+  </div>
+}
+
 function App() {
   const [state, setState] = React.useState<State>({ firstPinyin: {}, lastPinyin: {}, word: {} })
+  const [error, setError] = React.useState<ErrorMsg>('')
   const [seq, setSeq] = React.useState<Idiom[]>([])
 
   if (Object.keys(state.word).length > 0) {
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
-      <p>请输入一个四字成语，如成功识别：</p>
-      <p>本页面将自动为你接龙到“一个顶俩”</p>
-      <p>点击成语可以直接复制</p>
-      <p><input type='input' onChange={e => setSeq(handle(e.target.value, state))} /></p>
-      <ul>{seq.map(data => {
-        return <li className='clickable' onClick={copyText(data.word)} key={data.word}>{data.word}（{data.pinyin}）</li>
-      })}</ul>
-      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
-      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
-    </div>
-  } else if (state.error) {
-    return <div className='markdown-body'>
-      <h1>一个顶俩</h1>
-      <p style={{ color: 'red' }}>{`数据加载中...加载异常，请刷新重试：${state.error}`}</p>
-      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
-      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
+      <Input onChange={value => setSeq(handle(value, state))} />
+      <Output seq={seq} copyText={copyText} />
+      <Footer />
     </div>
   } else {
-    const url = 'https://cdn.jsdelivr.net/gh/pwxcoo/chinese-xinhua/data/idiom.json'
-    fetch(url).then(res => res.json()).then(json => setState(indexed(json))).catch(error => setState({ ...state, error }))
+    fetchJson(setState, setError)
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
-      <p>数据加载中...</p>
-      <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
-      <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
+      <Loading error={error} />
+      <Footer />
     </div>
   }
 }

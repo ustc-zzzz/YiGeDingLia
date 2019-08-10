@@ -3,6 +3,8 @@
     margin: auto;
     width: 768px;
     padding: 32px;
+    white-space: nowrap;
+    word-break: keep-all;
   }
 }
 
@@ -10,6 +12,8 @@
   body {
     margin: 0;
     padding: 32px;
+    white-space: nowrap;
+    word-break: keep-all;
   }
 }
 
