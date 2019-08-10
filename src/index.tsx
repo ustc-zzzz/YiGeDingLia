@@ -5,13 +5,16 @@ import * as clipboard from "clipboard-polyfill";
 import './index.css';
 import './github-markdown.css';
 
-interface Data {
+type Idiom = {
+  word: string,
+  pinyin: string,
+}
+
+type Data = Idiom & {
   abbreviation: string
   derivation: string
   example: string
   explanation: string
-  pinyin: string
-  word: string
   level?: number
 }
 
@@ -86,10 +89,6 @@ const indexed = (json: Data[]) => {
   return result
 }
 
-type Idiom = {
-  word: string,
-  pinyin: string,
-}
 
 const handle = (input: string, state: State) => {
   const result: Idiom[] = []
