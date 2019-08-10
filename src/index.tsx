@@ -1,9 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as clipboard from "clipboard-polyfill";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Clipboard from 'clipboard-polyfill'
 
-import './index.css';
-import './github-markdown.css';
+import './index.css'
+import './github-markdown.css'
 
 type Idiom = {
   word: string,
@@ -51,7 +51,7 @@ const fix = (data: Data) => {
     data.pinyin = data.pinyin.replace('liǎng', 'liǎ')
   }
   data.pinyin = data.pinyin.replace(/yi([ēéěèêe])/g, 'y$1')
-  return data;
+  return data
 }
 
 const indexed = (json: Data[]) => {
@@ -110,9 +110,9 @@ const handle = (input: string, state: State) => {
 
 function copyText(text: string) {
   return () => {
-    const dt = new clipboard.DT();
-    dt.setData("text/plain", text);
-    clipboard.write(dt);
+    const dt = new Clipboard.DT()
+    dt.setData('text/plain', text)
+    Clipboard.write(dt)
   }
 }
 
