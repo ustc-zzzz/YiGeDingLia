@@ -27,12 +27,16 @@ interface State {
   error?: string
 }
 
-const getFirstPinyin = (pinyin: string) => {
-  return pinyin.normalize('NFKD').replace(/[^\w\s]|\s.+/g, '')
+const getFirstPinyin = (data: Data) => {
+  return (data.pinyin.split(/\s+/).shift() || '')
+    .replace(/[āáǎà]/g, 'a').replace(/[ōóǒò]/g, 'o').replace(/[ēéěèê]/g, 'e')
+    .replace(/[īíǐì]/g, 'i').replace(/[ūúǔù]/g, 'u').replace(/[ǖǘǚǜü]/g, 'v')
 }
 
-const getLastPinyin = (pinyin: string) => {
-  return pinyin.normalize('NFKD').replace(/[^\w\s]|.+\s/g, '')
+const getLastPinyin = (data: Data) => {
+  return (data.pinyin.split(/\s+/).pop() || '')
+    .replace(/[āáǎà]/g, 'a').replace(/[ōóǒò]/g, 'o').replace(/[ēéěèê]/g, 'e')
+    .replace(/[īíǐì]/g, 'i').replace(/[ūúǔù]/g, 'u').replace(/[ǖǘǚǜü]/g, 'v')
 }
 
 const fix = (data: Data) => {
@@ -51,12 +55,12 @@ const indexed = (json: Data[]) => {
   for (const data of json) {
     fix(data)
     if (data.word.length === 4) {
-      const key1 = getLastPinyin(data.pinyin)
+      const key1 = getLastPinyin(data)
       const values1 = result.lastPinyin[key1] || []
       result.lastPinyin[key1] = values1
       values1.push(data)
 
-      const key2 = getFirstPinyin(data.pinyin)
+      const key2 = getFirstPinyin(data)
       const values2 = result.firstPinyin[key2] || []
       result.firstPinyin[key2] = values2
       values2.push(data)
@@ -71,7 +75,7 @@ const indexed = (json: Data[]) => {
       for (const data of result.lastPinyin[pinyin] || []) {
         if (!data.level) {
           data.level = level
-          newpinyins.add(getFirstPinyin(data.pinyin))
+          newpinyins.add(getFirstPinyin(data))
         }
       }
     })
@@ -88,7 +92,7 @@ const handle = (input: string, state: State) => {
     const level = data.level
     result.push(`${data.word}（${data.pinyin}）`)
     if (level > 1) {
-      const next = state.firstPinyin[getLastPinyin(data.pinyin)]
+      const next = state.firstPinyin[getLastPinyin(data)]
       const filtered = next.filter(d => d.level && d.level < level)
       data = filtered[Math.floor(Math.random() * filtered.length)]
     } else {
@@ -118,13 +122,13 @@ function App() {
   } else if (state.error) {
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
-      <p style={{color: 'red'}}>{`数据加载中...加载异常，请刷新重试：${state.error}`}</p>
+      <p style={{ color: 'red' }}>{`数据加载中...加载异常，请刷新重试：${state.error}`}</p>
       <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
       <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
     </div>
   } else {
     const url = 'https://cdn.jsdelivr.net/gh/pwxcoo/chinese-xinhua/data/idiom.json'
-    fetch(url).then(res => res.json()).then(json => setState(indexed(json))).catch(error => setState({...state, error}))
+    fetch(url).then(res => res.json()).then(json => setState(indexed(json))).catch(error => setState({ ...state, error }))
     return <div className='markdown-body'>
       <h1>一个顶俩</h1>
       <p>数据加载中...</p>
