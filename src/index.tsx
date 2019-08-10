@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as clipboard from "clipboard-polyfill";
 
 import './index.css';
 import './github-markdown.css';
@@ -85,27 +86,40 @@ const indexed = (json: Data[]) => {
   return result
 }
 
+type Idiom = {
+  word: string,
+  pinyin: string,
+}
+
 const handle = (input: string, state: State) => {
-  const result: string[] = []
+  const result: Idiom[] = []
   let data = state.word[input]
   while (data && data.level) {
     const level = data.level
-    result.push(`${data.word}（${data.pinyin}）`)
+    result.push(data)
     if (level > 1) {
       const next = state.firstPinyin[getLastPinyin(data)]
       const filtered = next.filter(d => d.level && d.level < level)
       data = filtered[Math.floor(Math.random() * filtered.length)]
     } else {
-      result.push('一个顶俩（yī gè dǐng liǎ）')
+      result.push({ word: '一个顶俩', pinyin: 'yī gè dǐng liǎ' })
       return result
     }
   }
   return result
 }
 
+function copyText(text: string) {
+  return () => {
+    const dt = new clipboard.DT();
+    dt.setData("text/plain", text);
+    clipboard.write(dt);
+  }
+}
+
 function App() {
   const [state, setState] = React.useState<State>({ firstPinyin: {}, lastPinyin: {}, word: {} })
-  const [seq, setSeq] = React.useState<string[]>([])
+  const [seq, setSeq] = React.useState<Idiom[]>([])
 
   if (Object.keys(state.word).length > 0) {
     return <div className='markdown-body'>
@@ -114,7 +128,7 @@ function App() {
       <p>本页面将自动为你接龙到“一个顶俩”</p>
       <p><input type='input' onChange={e => setSeq(handle(e.target.value, state))} /></p>
       <ul>{seq.map(data => {
-        return <li key={data}>{data}</li>
+        return <li onClick={copyText(data.word)} key={data.word}>{data.word}（{data.pinyin}）</li>
       })}</ul>
       <p>网页来源：<a href='https://github.com/ustc-zzzz/yigedinglia'>ustc-zzzz/yigedinglia</a></p>
       <p>数据来源：<a href='https://github.com/pwxcoo/chinese-xinhua'>pwxcoo/chinese-xinhua</a></p>
