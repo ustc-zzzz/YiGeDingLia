@@ -90,6 +90,10 @@ const indexed = (json: Data[]) => {
   return result
 }
 
+const show = (idiom: Idiom) => {
+  const pinyin = idiom.pinyin.replace(/\s+([aāáǎàoōóǒòeēéěèê])/g, '\'$1').replace(/\s+/g, '')
+  return `${idiom.word}（${pinyin}）`
+}
 
 const handle = (input: string, state: State) => {
   const result: Idiom[] = []
@@ -144,7 +148,7 @@ function Output(props: { copyText(word: string): () => void, seq: Idiom[] }) {
       <p>点击成语可以直接复制：</p>
       <ul>{props.seq.map(data => {
         return <li className='clickable' onClick={copyText(data.word)} key={data.word}>
-          {data.word}（{data.pinyin}）
+          {show(data)}
         </li>
       })}</ul>
     </div>
