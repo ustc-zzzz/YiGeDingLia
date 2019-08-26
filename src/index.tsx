@@ -147,7 +147,7 @@ function Output(props: { copyText(word: string): () => void, seq: Idiom[] }) {
     return <div>
       <p>点击成语可以直接复制：</p>
       <ul>{props.seq.map(data => {
-        return <li className='clickable' onClick={copyText(data.word)} key={data.word}>
+        return <li className='clickable' onClick={props.copyText(data.word)} key={data.word}>
           {show(data)}
         </li>
       })}</ul>
