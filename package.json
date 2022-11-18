@@ -10,7 +10,7 @@
     "clipboard-polyfill": "^2.8.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "typescript": "3.5.3"
   },
   "devDependencies": {},
