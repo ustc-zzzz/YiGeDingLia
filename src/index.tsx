@@ -1,9 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Clipboard from 'clipboard-polyfill'
+import * as Clipboard from 'clipboard-polyfill'
 
 import './index.css'
 import './github-markdown.css'
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+  })
+}
 
 type ErrorMsg = string
 
